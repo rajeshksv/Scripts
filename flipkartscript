@@ -1,11 +1,11 @@
 price=$(curl "http://www.flipkart.com/transcend-storejet-25m3-2-5-inch-1-tb-external-hard-disk/p/itmd72p3y3zcsbku?pid=ACCD72ZXFC6ZRTST&otracker=from-search&srno=t_1&query=transcend+1tb&ref=9a46203f-9528-4044-8bf3-fc2968e7d25f" | grep '<span class="fk-font-verybig pprice fk-bold">' | sed 's|.*Rs. \(.*\)</span>|\1|g');
 cat >/tmp/1 <<EOF
-To: rajeshksv37@gmail.com
-From: rajeshksv37@gmail.com
+To: abc@gmail.com
+From: abc@gmail.com
 Subject: External hard disk price : $price /-
 
 You wanna buy ?
 http://www.flipkart.com/transcend-storejet-25m3-2-5-inch-1-tb-external-hard-disk/p/itmd72p3y3zcsbku?pid=ACCD72ZXFC6ZRTST&otracker=from-search&srno=t_1&query=transcend+1tb&ref=9a46203f-9528-4044-8bf3-fc2968e7d25f
 
 EOF
-ssmtp rajeshksv37@gmail.com < /tmp/1
+ssmtp abc@gmail.com < /tmp/1
