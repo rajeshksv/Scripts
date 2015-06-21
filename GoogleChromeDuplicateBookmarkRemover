@@ -1,0 +1,31 @@
+# Usage  : ./GoogleChromeDuplicateBookmarkRemover <<BookmarkFolderName>> < <<bookmarksOldFile.html>> > <<bookmarksNewFile.html>>
+#!/bin/bash
+start=0
+declare -A urlArray
+while read line;do
+	if [[ "$line" =~ "<DT><H3 ADD_DATE=".*">"$1"</H3>" ]] || [[ $start -eq 1 ]];then
+		if [[ "$line" =~ "</DL><p>" ]];then
+			# Reached end of pattern.
+			start=0;
+			echo "$line"
+		else 
+			start=1;
+			if [[ "$line" =~ "<DT><A HREF=" ]];then
+				url=$(echo "$line" | sed 's|<DT><A HREF="\(.*\)" ADD_DATE.*|\1|');
+				url=$(echo "$url" | sed 's|[/:.]||g')
+				if test "${urlArray[$url]+isset}"
+				then
+					echo -n ""
+				else
+					echo $line
+					urlArray["$url"]="1"
+				fi
+			else
+				# Print lines which are not urls
+				echo $line
+			fi
+		fi
+	else 
+		echo "$line"
+	fi
+done
