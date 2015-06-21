@@ -1,4 +1,15 @@
-# Usage  : ./GoogleChromeDuplicateBookmarkRemover <<BookmarkFolderName>> < <<bookmarksOldFile.html>> > <<bookmarksNewFile.html>>
+# What it does ?
+##### Removes Duplicate Bookmarks present in Google Chrome (Currently removes in only for one folder at a time)
+
+# How to run ?
+##### In Google Chrome, Open Bookmark Manager
+##### Go to Organize -> Export Bookmarks to HTML File
+##### Run this script on that html file. It will give another html file (bookmarksOldFile.html)
+############# Usage  : ./GoogleChromeDuplicateBookmarkRemover <<BookmarkFolderName>> < <<bookmarksOldFile.html>> > <<bookmarksNewFile.html>>
+##### Go to Organize -> Import Bookmarks from HTML File (bookmarksNewFile.html)
+##### Delete your old bookmarks folder
+
+
 #!/bin/bash
 start=0
 declare -A urlArray
@@ -9,15 +20,17 @@ while read line;do
 			start=0;
 			echo "$line"
 		else 
+			# Only lines in pattern space will enter here
 			start=1;
 			if [[ "$line" =~ "<DT><A HREF=" ]];then
+				# Match only bookmark lines
 				url=$(echo "$line" | sed 's|<DT><A HREF="\(.*\)" ADD_DATE.*|\1|');
 				url=$(echo "$url" | sed 's|[/:.]||g')
 				if test "${urlArray[$url]+isset}"
 				then
 					echo -n ""
 				else
-					echo $line
+					echo "$line"
 					urlArray["$url"]="1"
 				fi
 			else
@@ -25,7 +38,8 @@ while read line;do
 				echo $line
 			fi
 		fi
-	else 
+	else
+		# Print bookmarks in other folders directly 
 		echo "$line"
 	fi
 done
