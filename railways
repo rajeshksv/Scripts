@@ -1,0 +1,21 @@
+# This mac script checks if train tickets are released for given date. Useful for special trains.
+# More Useful if this script is placed under crontab
+# Usage: ./railways 06580 ee ypr 3A 2 7
+if [[ $# -ne 6 ]];then
+        echo "Usage: ./railways train_no src dst class day month"
+        exit
+fi
+train=$1
+src=$2
+dst=$3
+class=$4
+day=$5
+month=$6
+requestString="lccp_trnno=$train&lccp_day=$day&lccp_month=$month&lccp_srccode=$src&lccp_dstncode=$dst&lccp_class1=$class"
+curl --compressed 'http://www.indianrail.gov.in/cgi_bin/inet_accavl_cgi_10251.cgi' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' -H 'Accept-Encoding: gzip, deflate' -H 'Accept-Language: en-US,en;q=0.5' -H 'Connection: keep-alive' -H 'Content-Type: application/x-www-form-urlencoded' -H 'Cookie: _ga=GA1.3.298046447.1495993010; _gid=GA1.3.266229412.1495993073; _gat=1' -H 'Host: www.indianrail.gov.in' -H 'Referer: http://www.indianrail.gov.in/seat_Avail.html' -H 'Upgrade-Insecure-Requests: 1' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:53.0) Gecko/20100101 Firefox/53.0' --data $requestString'&lccp_quota=GN&submit=Please+Wait...&lccp_classopt=ZZ&lccp_class2=ZZ&lccp_class3=ZZ&lccp_class4=ZZ&lccp_class5=ZZ&lccp_class6=ZZ&lccp_class7=ZZ&lccp_class6=ZZ&lccp_class7=ZZ' > /tmp/railways
+output=$(cat /tmp/railways | grep "$day- $month-2017")
+if [[ "$output" != "" ]];then
+        osascript -e 'display notification "Train Tickets are available for your date" with title "Hey Mac!"'
+else
+        osascript -e 'display notification "Train Tickets are not yet available for your date" with title "Hey Mac!"'
+fi
